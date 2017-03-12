@@ -54,6 +54,8 @@ private:
     void Predict(double dt);
 
     void Update(const MeasurementPackage &measurement_pack);
+
+    bool IsValidMeasurement(const MeasurementPackage &measurement_pack) const;
 };
 
 #endif /* FusionEKF_H_ */

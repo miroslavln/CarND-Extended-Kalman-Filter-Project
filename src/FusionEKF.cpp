@@ -21,17 +21,17 @@ FusionEKF::FusionEKF() {
 
     Hj_ = MatrixXd(3, 4);
 
-    noise_ax = 14;
-    noise_ay = 9.5;
+    noise_ax = 16.5;
+    noise_ay = 11;
 
     H_laser_ << 1.0, 0, 0, 0,
                 0, 1.0, 0, 0;
 
-    float s = 0.0225;
+    float s = 0.0254;
     R_laser_ << s, 0,
                 0, s;
 
-    s = 0.18;
+    s = 0.1;
     R_radar_ << s, 0, 0,
                 0, s, 0,
                 0, 0, s;
@@ -52,9 +52,16 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     double dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
     previous_timestamp_ = measurement_pack.timestamp_;
 
+    if (!IsValidMeasurement(measurement_pack))
+        return;
+
     Predict(dt);
 
     Update(measurement_pack);
+}
+
+bool FusionEKF::IsValidMeasurement(const MeasurementPackage &measurement_pack) const {
+    return !(measurement_pack.raw_measurements_[0] == 0 && measurement_pack.raw_measurements_[1] == 0);
 }
 
 void FusionEKF::Update(const MeasurementPackage &measurement_pack) {
