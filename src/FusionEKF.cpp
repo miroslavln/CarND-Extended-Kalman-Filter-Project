@@ -1,6 +1,4 @@
 #include "FusionEKF.h"
-#include "tools.h"
-#include "Eigen/Dense"
 #include <iostream>
 
 using namespace std;
@@ -23,12 +21,8 @@ FusionEKF::FusionEKF() {
 
     Hj_ = MatrixXd(3, 4);
 
-    /**
-    TODO:
-      * Finish initializing the FusionEKF.
-    */
-    noise_ax = 25;
-    noise_ay = 25;
+    noise_ax = 14;
+    noise_ay = 9.5;
 
     H_laser_ << 1.0, 0, 0, 0,
                 0, 1.0, 0, 0;
@@ -37,6 +31,7 @@ FusionEKF::FusionEKF() {
     R_laser_ << s, 0,
                 0, s;
 
+    s = 0.18;
     R_radar_ << s, 0, 0,
                 0, s, 0,
                 0, 0, s;
@@ -48,17 +43,11 @@ FusionEKF::FusionEKF() {
 FusionEKF::~FusionEKF() {}
 
 void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
-    /*****************************************************************************
-     *  Initialization
-     ****************************************************************************/
     if (!is_initialized_) {
         Initialize(measurement_pack);
-
-        // done initializing, no need to predict or update
         is_initialized_ = true;
         return;
     }
-
 
     double dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
     previous_timestamp_ = measurement_pack.timestamp_;
@@ -92,16 +81,16 @@ void FusionEKF::Initialize(const MeasurementPackage &measurement_pack) {
     previous_timestamp_ = measurement_pack.timestamp_;
 
     MatrixXd F(4, 4);
-    F <<    1.0, 0, 1, 0,
-            0, 1.0, 0, 1,
-            0, 0, 1.0, 0,
-            0, 0, 0, 1.0;
+    F <<    1, 0, 1, 0,
+            0, 1, 0, 1,
+            0, 0, 1, 0,
+            0, 0, 0, 1;
 
     MatrixXd P(4, 4);
-    P <<    1.0, 0, 0, 0,
-            0, 1.0, 0, 0,
-            0, 0, 1000.0, 0,
-            0, 0, 0, 1000.0;
+    P <<    1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1000, 0,
+            0, 0, 0, 1000;
 
     MatrixXd Q(4, 4);
 
