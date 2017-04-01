@@ -53,7 +53,19 @@ public:
      * @param H The transition matrix,
      * @param R the noise matrix
      */
-    void UpdateEKF(const VectorXd &z, const MatrixXd &H, const MatrixXd &R);
+    void UpdateLazer(const VectorXd &z, const MatrixXd &H, const MatrixXd &R);
+
+    /**
+     * Updates the state by using Extended Kalman Filter equations
+     * @param z The measurement at k+1
+     * @param H The transition matrix,
+     * @param R the noise matrix
+     */
+    void UpdateRadar(const VectorXd &z, const MatrixXd &H, const MatrixXd &R);
+
+private:
+
+    void Update(const VectorXd &y, const MatrixXd &H, const MatrixXd &R);
 };
 
 #endif /* KALMAN_FILTER_H_ */
